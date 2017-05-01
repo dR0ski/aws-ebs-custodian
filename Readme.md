@@ -46,26 +46,26 @@ D. Lastly, Your Snapshots will be deleted after the number of days you specified
 
 There are four Node.js files in this repository. 
 
-<b>1. reinv-ebs-snapshot-creation copy.js : </b>
+<b>1. Snapshot-Creation-Automation : </b>
 
 Used to create a snapshot of an Amazon EBS Volume. This should be used as a base for building your Lmabda functions to achieve Snapshots according Amazon Best Practices. 
 
 This Node.js script does an EC2 Describe Instance call and returns results base on a specified filter. The results are in JSON format. The JSON data is parsed and specific information like DeviceName, VolumeId, and Tags are retrieved. 
 
-"reinv-ebs-snapshot-creation copy.js" is built to only create Snapshots of Non Root Volumes. Please note that I have built a modifies version of this script that allows you to run commands like "sync" on a Linux server before initiating a Snapshot. EC2 Run Command is used to accomplish this. 
+"Snapshot-Creation-Automation" is built to only create Snapshots of Non Root Volumes. Please note that I have built a modifies version of this script that allows you to run commands like "sync" on a Linux server before initiating a Snapshot. EC2 Run Command is used to accomplish this. 
 
 Please note that you can leverage EC2 Run Command to take this a step further by flushing the Page Cache on the Linux machine and then un mount the volume Snapshot it and re mount to the instance. 
 
 You must schedule this fucntion to run by creating a CloudWatch Event. This schedule can be whatever you want it to. Please note that there are default limits on the number of snapshots you can create, please ensure that your limits meet your needs. You can easily increase your limits by submitting a request to AWS. 
 
 
-<b>2. reinv-snapshot-state-change copy.js</b>
+<b>2. Snapshot-State-Change-Update</b>
 
 Used to update the "State" field of the Table in DynamoDb with the state of the Snapshot after you have made the CreateSnapshot API call. 
 
 You must Create a CloudWatch Event to schedule this function to run multiple times each day. During testing, I schedule this function run every hour. That, however, is overkill
 
-<b>3. reinv-delete-snapshot copy.js : </b>
+<b>3. Snapshot-Deletion-Automation : </b>
 
 This script is used to delete each created snapshot after a the period of time you specified. You must add a Tag to your EC2 Instance. The Tag Key can be whatever you want it to be, I used snaplifetime but you can chose to do something else. You must specify a value along with the Tag. The Value is the number of days you would like a Snapshot for this specific Instance to live. 
 
@@ -75,7 +75,7 @@ You must schedule this function to run using CloudWatch Events. I generally run 
 
 BONUS SCRIPT! BONUS SCRIPT! BONUS SCRIPT! BONUS SCRIPT! BONUS SCRIPT!
 
-<b>4.  reinv-EBS-Snapshot-EC2-RunCmd copy.js </b>
+<b>4.  Snapshot-Creation-Automation-with-EC2RunCommand	 </b>
 
 "reinv-EBS-Snapshot-EC2-RunCmd copy.js" is a modified version of "reinv-ebs-snapshot-creation copy.js ". It is important to note that "reinv-EBS-Snapshot-EC2-RunCmd copy.js" leverages Amazon EC2 Run Command to run shell scripts on the EC2 Instance that the Volumes are being snapshotted for. 
 
